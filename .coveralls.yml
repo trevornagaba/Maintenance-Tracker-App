@@ -1,5 +1,5 @@
 repo_token: MN3uILItTo8fjqCCE7rhRxBrNDhanNp2m
-service_name: travis-CI
+service_name: travis-ci
 parallel: true # if the CI is running your build in parallel
 
 # after-success: nosetests --with-coverage
