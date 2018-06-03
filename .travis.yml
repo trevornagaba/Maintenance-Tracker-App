@@ -7,7 +7,7 @@ install:
 
 script:
   - pytest tests/test_run.py
-  - nosetests --with-coverage
+  - nose2 --with-coverage
 
 after_success:
   - coveralls
