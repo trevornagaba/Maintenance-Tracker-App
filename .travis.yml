@@ -7,3 +7,7 @@ install:
 
 script:
   - pytest tests/test_run.py
+  - python setup.py install
+
+after_success:
+  - coveralls
