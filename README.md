@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/trevornagaba/Maintenance-Tracker-App.svg?branch=develop)](https://travis-ci.org/trevornagaba/Maintenance-Tracker-App)
+[![Coverage Status](https://coveralls.io/repos/github/trevornagaba/Maintenance-Tracker-App/badge.svg?branch=master)](https://coveralls.io/github/trevornagaba/Maintenance-Tracker-App?branch=master)
 
 # Maintenance-Tracker-App
 Maintenance Tracker App is an application that provides users with the ability to create, update and monitor device repair or maintenance requests.
