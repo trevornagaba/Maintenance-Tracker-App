@@ -7,7 +7,6 @@ install:
 
 script:
   - pytest tests/test_run.py
-  - python setup.py install
   # after-success: nosetests --with-coverage
 
 after_success:
