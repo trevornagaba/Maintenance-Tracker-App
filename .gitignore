@@ -1,2 +1,9 @@
 tracker-env/
 congfig.py
+myapp/models.pyc
+myapp/__init__.pyc
+run.pyc
+tests/__pycache__
+tests/.pytest_cache
+.pytest_cache
+tests/__init__.pyc
