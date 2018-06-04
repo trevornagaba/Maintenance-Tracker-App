@@ -2,8 +2,7 @@ from flask import Flask, request, jsonify
 from myapp.models import Request, User
 import json
 
-# A list to store requests
-requests = []
+requests = Request()
 users = []
 
 app = Flask(__name__)
@@ -62,7 +61,7 @@ def create_requests():
     # Retrieve the data
     data = request.get_json()
     # Validate the data
-    if data['device_type'] == "" or data['fault_description'] == "" or data['device_status'] == "":
+    if data['device_type'] == "" or data['fault_description'] == "":
         return jsonify (
             {
                 'status': 'FAILED',
@@ -70,18 +69,17 @@ def create_requests():
         }
         ), 400
     try:
-        if isinstance(data['device_type'].encode(), str) and isinstance (data['fault_description'].encode(), str) and isinstance (data['device_status'].encode(), str):
+        if isinstance(data['device_type'].encode(), str) and isinstance (data['fault_description'].encode(), str):
             # Create id and store the data
-            id = len(requests) + 1
-            req =  Request(id, data['device_type'], data['fault_description'], data['device_status'])
-            requests.append(req)
+            requests.add_request(data['device_type'], data['fault_description'])
+            index = requests.number_of_requests()-1
             return jsonify(
                 {
                     'status':'OK',
                     'message': 'Request created successfully',
-                    'id': id,
-                    'device-status': requests[-1].get_device_status(),
-                    'device-type': requests[-1].get_device_type()
+                    'device-status': requests.get_request(index)['device_status'],
+                    'device-type': requests.get_request(index)['device_type'],
+                    'request-id': requests.get_request(index)['id']
                 }
             ), 201
     except AttributeError:
@@ -95,31 +93,37 @@ def create_requests():
 #Fetch all requests of a logged in user
 @app.route('/v1/users/requests', methods = ['GET'])
 def view_requests():
+    if requests.number_of_requests < 1:
         return jsonify(
-                {
-                'number of requests': len(requests),
-                'status':'OK', 
-                'message':'successful',
-                'requests': [my_requests.__dict__ for my_requests in requests]
-                }
-            ), 200
+            {
+                'status':'FAILED',
+                'message': 'No requests added',
+            }
+        ), 400
+    return jsonify(
+            {
+            'number of requests': requests.number_of_requests(),
+            'status':'OK', 
+            'message':'successful',
+            'requests': requests.get_all_requests() 
+            }
+        ), 200
+        
 
 #Fetch a request that belongs to a logged in user
-@app.route('/v1/users/requests/<id>', methods = ['GET'])
+@app.route('/v1/users/requests/<int:id>', methods = ['GET'])
 def view_user_requests(id):
     try:     
-        # Convert id to integer 
-        id_number = int(id)
         # Validate request
-        if isinstance(id_number, int):
+        if isinstance(id, int):
             return jsonify(
                 {
                 'status':'OK', 
                 'message':'successful',
-                'device-type': requests[id_number-1].get_device_type(),
-                'fault description': requests[id_number-1].get_fault_description(),
-                'device-status': requests[id_number-1].get_device_status(),
-                'id': requests[id_number-1].id
+                'device-type': requests.get_request(id-1)['device_type'],
+                'fault description': requests.get_request(id-1)['fault_description'],
+                'device-status': requests.get_request(id-1)['device_status'],
+                'id': requests.get_request(id-1)['id']
                 }
             ), 200
     # Catch none integer input
@@ -140,12 +144,12 @@ def view_user_requests(id):
         ), 400
 
 #Modify a request
-@app.route('/v1/users/requests/<id>', methods = ['PUT'])
+@app.route('/v1/users/requests/<int:id>', methods = ['PUT'])
 def modify_requests(id):
     # Retrieve the request
     data = request.get_json()
     # Validate the data
-    if data['device_type'] == "" or data['fault_description'] == "" or data['device_status'] == "":
+    if data['device_type'] == "" or data['fault_description'] == "":
         return jsonify (
             {
                 'status': 'OK',
@@ -153,21 +157,17 @@ def modify_requests(id):
         }
         )
     try:
-        id_number = int(id)
-        if isinstance(data['device_type'].encode(), str) and isinstance(data['fault_description'].encode(), str) and isinstance(data['device_status'].encode(), str) and isinstance(id_number, int):
+        if isinstance(data['device_type'].encode(), str) and isinstance(data['fault_description'].encode(), str) and isinstance(id, int):
             # Store the data 
-            requests[id_number-1].device_type = data['device_type'].encode()
-            requests[id_number-1].fault_description = data['fault_description'].encode()
-            requests[id_number-1].device_status = data['device_status'].encode()
-
+            requests.modify_request(id, data['device_type'], data['fault_description'])
             return jsonify(
                 {
                 'status': 'OK',
-                'device-type': requests[id_number-1].get_device_type(),
-                'fault-description': requests[id_number-1].get_fault_description(),
+                'device-type': requests.get_request(id-1)['device_type'],
+                'fault-description': requests.get_request(id-1)['fault_description'],
                 'message': 'A request was modified',
-                'request-id': id,
-                'device-status': requests[id_number-1].get_device_status()
+                'request-id': requests.get_request(id-1)['id'],
+                'device-status': requests.get_request(id-1)['device_status']
                 }
             ), 200    
     except AttributeError:

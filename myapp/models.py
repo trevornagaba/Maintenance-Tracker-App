@@ -16,20 +16,24 @@ class User():
         return self.reenter_password
 
 class Request():
-    def __init__(self, id, device_type, fault_description, device_status):
-        self.id = id
-        self.device_type = device_type
-        self.fault_description = fault_description
-        self.device_status = device_status
+    def __init__(self):
+        self.requests = []
 
-    def get_device_type(self):
-        return self.device_type
+    def add_request(self, device_type, fault_description, device_status = 'Pending'):
+        id = len(self.requests)+1
+        request = {'id':id, 'device_type': device_type, 'fault_description': fault_description, 'device_status': device_status}
+        self.requests.append(request)
 
-    def get_fault_description(self):
-        return self.fault_description
+    def get_request(self, id):
+        return self.requests[id]
 
-    def get_id(self):
-        return self.id
+    def get_all_requests(self):
+        return self.requests
 
-    def get_device_status(self):
-        return self.device_status
+    def modify_request(self, id, device_type, fault_description, device_status = 'Pending'):
+        request = {'id':id, 'device_type': device_type, 'fault_description': fault_description, 'device_status': device_status}
+        self.requests[id-1] = request
+
+    def number_of_requests(self):
+        length = len(self.requests)
+        return length
