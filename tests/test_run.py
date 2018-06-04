@@ -229,8 +229,7 @@ class MyTests(TestCase):
             post_data = (
                 { 
                     "device_type":"laptop",
-                    "fault_description": "Battery malfunctioning",
-                    "device_status": "Submitted"
+                    "fault_description": "Battery malfunctioning"
                 }
             )
             response = self.client.post(
@@ -239,7 +238,7 @@ class MyTests(TestCase):
                 data = json.dumps(post_data)
             )
             reply = json.loads(response.data.decode()) 
-            self.assertTrue(reply['device-status'] in ['Submitted', 'Rejected', 'Approved', 'Resolved'], True)
+            self.assertTrue(reply['device-status'] in ['Pending', 'Rejected', 'Approved', 'Resolved'], True)
             self.assertEquals(response.status_code, 201)
 
     # Test the view all requests endpoint
@@ -248,8 +247,7 @@ class MyTests(TestCase):
             post_data = (
                 { 
                     "device_type":"laptop",
-                    "fault_description": "Battery malfunctioning",
-                    "device_status": "Submitted"
+                    "fault_description": "Battery malfunctioning"
                 }
             )
             self.client.post(
@@ -273,8 +271,7 @@ class MyTests(TestCase):
             post_data = (
                 { 
                     "device_type":"laptop",
-                    "fault_description": "Battery malfunctioning",
-                    "device_status": "Submitted"
+                    "fault_description": "Battery malfunctioning"
                 }
             )
             self.client.post(
@@ -288,7 +285,7 @@ class MyTests(TestCase):
                 content_type = 'application/json'
             )
             reply = json.loads(response.data.decode()) 
-            self.assertTrue(reply['device-status'] in ['Submitted', 'Rejected', 'Approved', 'Resolved'], True)
+            self.assertTrue(reply['device-status'] in ['Pending', 'Rejected', 'Approved', 'Resolved'], True)
             self.assertEquals(reply['message'], 'successful')
             self.assertTrue(response.status_code, 200)
 
@@ -298,15 +295,13 @@ class MyTests(TestCase):
             post_data = (
                 { 
                     "device_type":"laptop",
-                    "fault_description": "Battery malfunctioning",
-                    "device_status": "Approved"
+                    "fault_description": "Battery malfunctioning"
                 }
             )
             put_data = (
                 {
                     "device_type":"computer",
-                    "fault_description": "Dead screen",
-                    "device_status": "Submitted"
+                    "fault_description": "Dead screen"
                 }
             )
             self.client.post(
@@ -320,6 +315,6 @@ class MyTests(TestCase):
                 data = json.dumps(put_data)
             )
             reply = json.loads(response.data.decode())
-            self.assertTrue(reply['device-status'] in ['Submitted', 'Rejected', 'Approved', 'Resolved'], True)
+            self.assertTrue(reply['device-status'] in ['Pending', 'Rejected', 'Approved', 'Resolved'], True)
             self.assertEquals(reply['device-type'], 'computer')
             self.assertEquals(response.status_code, 200)
